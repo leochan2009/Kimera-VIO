@@ -20,7 +20,7 @@ message(STATUS "==============================================================")
 message(STATUS "====================  Dependencies ===========================")
 
 ### System Dependencies
-find_package(Boost REQUIRED COMPONENTS
+find_package(Boost REQUIRED COMPONENTS system
   filesystem serialization regex timer date_time thread)
 if(NOT TARGET Boost::boost)
   add_library(Boost::boost INTERFACE IMPORTED)
@@ -28,7 +28,7 @@ if(NOT TARGET Boost::boost)
   INTERFACE_LINK_LIBRARIES "${Boost_LIBRARIES}"
   INTERFACE_INCLUDE_DIRECTORIES "${Boost_INCLUDE_DIRS}")
 endif()
-
+find_package(pybind11 CONFIG REQUIRED)
 find_package(Gflags REQUIRED)
 find_package(Glog 0.3.5 REQUIRED)
 find_package(GTSAM REQUIRED)
@@ -43,7 +43,7 @@ if(NOT TARGET DBoW2::DBoW2)
 endif()
 find_package(KimeraRPGO REQUIRED)
 # Pangolin is optional
-find_package(Pangolin QUIET)
+#find_package(Pangolin QUIET)
 
 include(VerifyGtsamConfig)
 option(KIMERA_VERIFY_GTSAM_CONFIG "Check that GTSAM was compiled with the right options" ON)
@@ -181,7 +181,7 @@ target_compile_features(${PROJECT_NAME} PUBLIC
 add_library(kimera_vio::kimera_vio ALIAS kimera_vio)
 
 add_executable(stereoVIOEuroc ./examples/KimeraVIO.cpp)
-target_link_libraries(stereoVIOEuroc PUBLIC kimera_vio::kimera_vio)
+target_link_libraries(stereoVIOEuroc PUBLIC kimera_vio::kimera_vio opengv DBoW2::DBoW2 KimeraRPGO)
 
 ############################### TESTS ##########################################
 ### Add testing
@@ -270,7 +270,7 @@ if(KIMERA_BUILD_TESTS)
     tests/testOnlineAlignment.cpp
     tests/testOpticalFlowPredictor.cpp
     )
-  target_link_libraries(testKimeraVIO gtest kimera_vio::kimera_vio)
+  target_link_libraries(testKimeraVIO gtest kimera_vio::kimera_vio opengv DBoW2::DBoW2 KimeraRPGO)
 
   if(CMAKE_VERSION VERSION_LESS 3.10)
     enable_testing()
@@ -278,7 +278,7 @@ if(KIMERA_BUILD_TESTS)
     gtest_add_tests(testKimeraVIO "" AUTO)
   else()
     include(GoogleTest)
-    gtest_discover_tests(testKimeraVIO)
+    #gtest_discover_tests(testKimeraVIO)
   endif()
 endif(KIMERA_BUILD_TESTS)
 

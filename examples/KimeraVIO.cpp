@@ -34,7 +34,7 @@ DEFINE_int32(dataset_type, 0, "Type of parser to use:\n "
                               "0: Euroc \n 1: Kitti (not supported).");
 DEFINE_string(
     params_folder_path,
-    "../params/Euroc",
+    "../Kimera-VIO/params/EurocMono",
     "Path to the folder containing the yaml files with the VIO parameters.");
 
 int main(int argc, char* argv[]) {
@@ -53,10 +53,10 @@ int main(int argc, char* argv[]) {
       switch (vio_params.frontend_type_) {
         case VIO::FrontendType::kMonoImu: {
           dataset_parser =
-              VIO::make_unique<VIO::MonoEurocDataProvider>(vio_params);
+              VIO::make_unique<VIO::MonoEurocDataProvider>( "/Users/longquanchen/Desktop/Work/DistalTipTracking", 0, 2000, vio_params);
         } break;
         case VIO::FrontendType::kStereoImu: {
-          dataset_parser = VIO::make_unique<VIO::EurocDataProvider>(vio_params);
+          dataset_parser = VIO::make_unique<VIO::EurocDataProvider>("/Users/longquanchen/Desktop/Work/DistalTipTracking", 0, 2000, vio_params);
         } break;
         default: {
           LOG(FATAL) << "Unrecognized Frontend type: "
